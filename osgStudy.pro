@@ -1,7 +1,7 @@
 SOURCES += \
     main.cpp \
     getworldcoordinateofnodevisitor.cpp \
-    worldtoscreen.cpp
+    myMatrixTransform.cpp
 
 LIBS += -LC:/osg/osgmake/osgearth_bin/lib \
     -losgd \
@@ -30,4 +30,4 @@ LIBS += -LC:/osg/osgmake/osgearth_bin/lib \
 
 HEADERS += \
     getworldcoordinateofnodevisitor.h \
-    worldtoscreen.h
+    myMatrixTransform.h
