@@ -2,6 +2,7 @@
 #include <osg/Node>
 #include <osgDB/ReadFile>
 #include "getworldcoordinateofnodevisitor.h"
+#include "examples/mybillboardtree.h"
 
 int main(void)
 {
@@ -15,9 +16,10 @@ int main(void)
 
     //将节点添加至场景中
     root->addChild(node);
+    root->addChild(mybillboardTree::createBillboardTree(osgDB::readImageFile("Images/tree0.rgba")));
 
     //遍历获取世界坐标
-    osg::Matrixd* matrix = GetWorldCoordinateOfNodeVisitor::getWorldCoords(node);
+    //osg::Matrixd* matrix = GetWorldCoordinateOfNodeVisitor::getWorldCoords(node);
 
     //渲染
     viewer->setSceneData(root.get());

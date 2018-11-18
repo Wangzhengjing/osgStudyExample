@@ -1,7 +1,8 @@
 SOURCES += \
     main.cpp \
     getworldcoordinateofnodevisitor.cpp \
-    myMatrixTransform.cpp
+    myMatrixTransform.cpp \
+    examples/mybillboardtree.cpp
 
 LIBS += -LC:/osg/osgmake/osgearth_bin/lib \
     -losgd \
@@ -30,4 +31,5 @@ LIBS += -LC:/osg/osgmake/osgearth_bin/lib \
 
 HEADERS += \
     getworldcoordinateofnodevisitor.h \
-    myMatrixTransform.h
+    myMatrixTransform.h \
+    examples/mybillboardtree.h
