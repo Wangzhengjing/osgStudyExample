@@ -18,10 +18,10 @@ osg::ref_ptr<osg::Node> mybillboardTree::createBillboardTree (osg::ref_ptr<osg::
 
     //定义顶点，并设置顶点
     osg::ref_ptr<osg::Vec3Array> v = new osg::Vec3Array;
-    v->push_back(osg::Vec3(-0.5f,0.0f,0.5f));
+    v->push_back(osg::Vec3(-0.5f,0.0f,-0.5f));
     v->push_back(osg::Vec3(0.5f,0.0f,-0.5f));
     v->push_back(osg::Vec3(0.5f,0.0f,0.5f));
-    v->push_back(osg::Vec3(-0.5f,0.0f,-0.5f));
+    v->push_back(osg::Vec3(-0.5f,0.0f,0.5f));
 
     geometry->setVertexArray(v.get());
 
@@ -82,7 +82,7 @@ osg::ref_ptr<osg::Node> mybillboardTree::createBillboardTree (osg::ref_ptr<osg::
     //设置旋转模式为绕轴转，因此要设置轴旋转
     billboard2->setMode(osg::Billboard::AXIAL_ROT);
     //设置旋转轴
-    billboard2->setAxis(osg::Vec3(0.0f,0.0f,1.0f));
+    billboard2->setAxis(osg::Vec3(1.0f,0.0f,0.0f));
     billboard2->addDrawable(geometry.get(),osg::Vec3(10.0f,0.0f,0.0f));
 
     osg::ref_ptr<osg::Group> billboard = new osg::Group;
