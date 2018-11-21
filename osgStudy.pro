@@ -3,7 +3,10 @@ SOURCES += \
     getworldcoordinateofnodevisitor.cpp \
     myMatrixTransform.cpp \
     examples/mybillboardtree.cpp \
-    examples/mycube.cpp
+    examples/mycube.cpp \
+    mytexture.cpp \
+    mytexturecube.cpp \
+    examplestexture.cpp
 
 LIBS += -LC:/osg/osgmake/osgearth_bin/lib \
     -losgd \
@@ -34,4 +37,7 @@ HEADERS += \
     getworldcoordinateofnodevisitor.h \
     myMatrixTransform.h \
     examples/mybillboardtree.h \
-    examples/mycube.h
+    examples/mycube.h \
+    mytexture.h \
+    mytexturecube.h \
+    examplestexture.h

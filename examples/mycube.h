@@ -11,6 +11,10 @@
 #include <osg/LineWidth>
 #include <osgText/Text>
 #include <osgDB/ReadFile>
+#include <osg/TextureCubeMap>
+#include <osg/ShapeDrawable>
+#include <osg/TexGen>
+#include <osg/TexMat>
 
 class myCube
 {
@@ -19,7 +23,8 @@ public:
 
     static void showBoundingBox(osg::Group* pGroup,osg::BoundingBox bb,bool showPoint = true);
     static osg::ref_ptr<osg::Node> createBox(osg::BoundingBox bb,bool showPoint = true);
-    static osg::ref_ptr<osg::Node> createBox2(osg::BoundingBox bb,bool showPoint = true);
+    static osg::ref_ptr<osg::Node> createBox2(void);
+    static osg::ref_ptr<osg::Node> createBox3(void);
 };
 
 #endif // MYCUBE_H

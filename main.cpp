@@ -5,9 +5,14 @@
 #include "examples/mybillboardtree.h"
 #include "examples/mycube.h"
 #include <osg/ComputeBoundsVisitor>
+#include "mytexture.h"
+#include "mytexturecube.h"
+#include "examplestexture.h"
 
 int main(void)
 {
+    //examplesTexture::test3();
+#if 1
     //创建Viewer对象，场景浏览器
     osg::ref_ptr<osgViewer::Viewer> viewer = new osgViewer::Viewer;
 
@@ -26,18 +31,17 @@ int main(void)
     //osg::Matrixd* matrix = GetWorldCoordinateOfNodeVisitor::getWorldCoords(node);
 
     //包围盒渲染
-    osg::ComputeBoundsVisitor cbv;
-    node->accept(cbv);
-    osg::BoundingBox bb = cbv.getBoundingBox();
-    //myCube::showBoundingBox(root, bb);
-    osg::ref_ptr<osg::Node> node1 = myCube::createBox(bb);
+    //osg::ref_ptr<osg::Node> node1 = myCube::createBox2();
+    //myTexture::runTexture(node);
+    //root->addChild(node1);
 
-    root->addChild(node1);
+    root->addChild(myTextureCube::runTextureCube());
+
 
     //渲染
     viewer->setSceneData(root.get());
     viewer->realize();
     viewer->run();
-
+#endif
     return 0;
 }
