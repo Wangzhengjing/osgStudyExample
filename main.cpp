@@ -15,6 +15,7 @@
 #include "mymanipulator.h"
 #include <osgEarth/GeoData>
 #include <osgEarthUtil/EarthManipulator>
+#include "earthwalkmanipulator2.h"
 
 using namespace osgEarth;
 using namespace osgEarth::Util;
@@ -142,6 +143,7 @@ int myManipulator()
 
 int main(void)
 {
+    myManipulator();
     //examplesTexture::test3();
 #if 0
     //创建Viewer对象，场景浏览器

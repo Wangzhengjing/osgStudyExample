@@ -5,19 +5,19 @@
 
 using namespace osgEarth;
 
-EarthWalkManipulator::EarthWalkManipulator()
+EarthWalkManipulator1::EarthWalkManipulator1()
 {
     _eye = osg::Vec3d(0, 0, 0);
     //_rotate = osg::Quat(-osg::PI_2, osg::X_AXIS);
     _speed = 1.0;
 }
 
-EarthWalkManipulator::~EarthWalkManipulator()
+EarthWalkManipulator1::~EarthWalkManipulator1()
 {
 }
 
 //获取相机的姿态矩阵
-osg::Matrixd EarthWalkManipulator::getMatrix() const
+osg::Matrixd EarthWalkManipulator1::getMatrix() const
 {
     osg::Matrix mat;
     mat.setRotate(_rotate);//先旋转
@@ -25,7 +25,7 @@ osg::Matrixd EarthWalkManipulator::getMatrix() const
     return mat;
 }
 
-osg::Matrixd EarthWalkManipulator::getInverseMatrix() const
+osg::Matrixd EarthWalkManipulator1::getInverseMatrix() const
 {
     osg::Matrix mat;
     mat.setRotate(-_rotate);
@@ -35,21 +35,21 @@ osg::Matrixd EarthWalkManipulator::getInverseMatrix() const
 }
 
 void
-EarthWalkManipulator::home(double unused)
+EarthWalkManipulator1::home(double unused)
 {
     _eye = osg::Vec3d(0, 0, 0);
     _speed = 1.0;
 }
 
 void
-EarthWalkManipulator::home(const osgGA::GUIEventAdapter&, osgGA::GUIActionAdapter& us)
+EarthWalkManipulator1::home(const osgGA::GUIEventAdapter&, osgGA::GUIActionAdapter& us)
 {
     home(0.0);
     us.requestRedraw();
 }
 
 void
-EarthWalkManipulator::setNode(osg::Node* node)
+EarthWalkManipulator1::setNode(osg::Node* node)
 {
     // you can only set the node if it has not already been set, OR if you are setting
     // it to NULL. (So to change it, you must first set it to NULL.) This is to prevent
@@ -84,12 +84,12 @@ EarthWalkManipulator::setNode(osg::Node* node)
 }
 
 osg::Node*
-EarthWalkManipulator::getNode()
+EarthWalkManipulator1::getNode()
 {
     return _node.get();
 }
 
-bool EarthWalkManipulator::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us)
+bool EarthWalkManipulator1::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us)
 {
     switch (ea.getEventType())
     {
@@ -218,7 +218,7 @@ bool EarthWalkManipulator::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIAc
 }
 
 bool
-EarthWalkManipulator::established()
+EarthWalkManipulator1::established()
 {
     if (_srs.valid() && _mapNode.valid() && _node.valid())
         return true;
@@ -238,13 +238,13 @@ EarthWalkManipulator::established()
     return true;
 }
 
-void EarthWalkManipulator::addMouseEvent(const osgGA::GUIEventAdapter& ea)
+void EarthWalkManipulator1::addMouseEvent(const osgGA::GUIEventAdapter& ea)
 {
     _ga_t1 = _ga_t0;
     _ga_t0 = &ea;
 }
 
-bool EarthWalkManipulator::calcMovement(const osgGA::GUIEventAdapter& ea)
+bool EarthWalkManipulator1::calcMovement(const osgGA::GUIEventAdapter& ea)
 {
     osg::Quat qat;
     osg::Matrix mat;

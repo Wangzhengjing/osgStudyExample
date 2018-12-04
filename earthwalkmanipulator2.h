@@ -1,23 +1,17 @@
-#ifndef MYMANIPULATOR_H
-#define MYMANIPULATOR_H
+#ifndef EARTHWALKMANIPULATOR2_H
+#define EARTHWALKMANIPULATOR2_H
+#pragma once
 
-#include <osg/Vec3d>
-#include <osg/Quat>
-#include <osg/Referenced>
-#include <osg/Node>
-#include <osgEarth/MapNode>
-#include <osgGA/GUIEventHandler>
 #include <osgGA/CameraManipulator>
 #include <osgEarth/MapNode>
 #include <osgEarth/Viewpoint>
 #include <osgEarth/GeoData>
 
-
-class EarthWalkManipulator1:public osgGA::CameraManipulator
+class EarthWalkManipulator :public osgGA::CameraManipulator
 {
 public:
-    EarthWalkManipulator1();
-    ~EarthWalkManipulator1();
+    EarthWalkManipulator();
+    ~EarthWalkManipulator();
 
     //所有漫游器都必须实现的4个纯虚函数
     virtual void setByMatrix(const osg::Matrixd& matrix) {}  //设置相机的位置姿态矩阵
@@ -33,6 +27,8 @@ public:
     virtual osg::Node* getNode();
     bool established();
 
+    virtual void computeHomePosition();
+
     /**
     * Sets the camera position, optionally moving it there over time.
     */
@@ -43,6 +39,8 @@ public:
 
     void addMouseEvent(const osgGA::GUIEventAdapter& ea);
     bool calcMovement(const osgGA::GUIEventAdapter& ea);
+
+    void flushMouseEventStack();
 protected:
     osg::Vec3   _eye;               //视点位置
     osg::Quat    _rotate;            //旋转姿态
@@ -54,10 +52,10 @@ protected:
     osg::ref_ptr<const osgEarth::SpatialReference> _srs;
 
     float        _speed;                //速度
-
+    bool        _transversal;        //横移
     // Internal event stack comprising last two mouse events.
     osg::ref_ptr<const osgGA::GUIEventAdapter> _ga_t1;
     osg::ref_ptr<const osgGA::GUIEventAdapter> _ga_t0;
 };
 
-#endif // MYMANIPULATOR_H
+#endif // EARTHWALKMANIPULATOR2_H

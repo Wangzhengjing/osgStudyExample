@@ -7,7 +7,8 @@ SOURCES += \
     mytexture.cpp \
     mytexturecube.cpp \
     examplestexture.cpp \
-    mymanipulator.cpp
+    mymanipulator.cpp \
+    earthwalkmanipulator2.cpp
 
 LIBS += -LC:/osg/osgmake/osgearth_bin/lib \
     -losgd \
@@ -42,4 +43,5 @@ HEADERS += \
     mytexture.h \
     mytexturecube.h \
     examplestexture.h \
-    mymanipulator.h
+    mymanipulator.h \
+    earthwalkmanipulator2.h
