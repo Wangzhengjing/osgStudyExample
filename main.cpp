@@ -16,6 +16,7 @@
 #include <osgEarth/GeoData>
 #include <osgEarthUtil/EarthManipulator>
 #include "earthwalkmanipulator2.h"
+#include "mycubeTexture.h"
 
 using namespace osgEarth;
 using namespace osgEarth::Util;
@@ -143,16 +144,14 @@ int myManipulator()
 
 int main(void)
 {
-    myManipulator();
-    //examplesTexture::test3();
-#if 0
+
     //创建Viewer对象，场景浏览器
     osg::ref_ptr<osgViewer::Viewer> viewer = new osgViewer::Viewer;
 
     osg::ref_ptr<osg::Group> root = new osg::Group;
 
     //创建一个节点，读取模型
-    osg::ref_ptr<osg::Node> node = osgDB::readNodeFile("xjsn.OSGB");
+    //osg::ref_ptr<osg::Node> node = osgDB::readNodeFile("xjsn.OSGB");
 
     //root->addChild(node);
 
@@ -164,17 +163,17 @@ int main(void)
     //osg::Matrixd* matrix = GetWorldCoordinateOfNodeVisitor::getWorldCoords(node);
 
     //包围盒渲染
-    //osg::ref_ptr<osg::Node> node1 = myCube::createBox2();
+    osg::ref_ptr<osg::Node> node1 = myCubeTexture::createBox();
     //myTexture::runTexture(node);
     //root->addChild(node1);
 
-    root->addChild(myTextureCube::runTextureCube());
+    //root->addChild(myTextureCube::runTextureCube());
 
-
+    root->addChild(node1);
     //渲染
     viewer->setSceneData(root.get());
     viewer->realize();
     viewer->run();
-#endif
+
     return 0;
 }
