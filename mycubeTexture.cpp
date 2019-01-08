@@ -1,7 +1,19 @@
 #include "myCubeTexture.h"
+#include "perspectiveTrans.h"
+#include <osgDB/WriteFile>
 
 myCubeTexture::myCubeTexture()
 {
+}
+
+osg::ref_ptr<osg::Image> CVMat_2_OSGImage(cv::Mat& cvimg)
+{
+//    osg::Image osgframe2();
+    osg::Image* osgframe = new osg::Image();
+    osgframe->setImage(cvimg.cols, cvimg.rows, 3,
+        GL_RGB, GL_BGR, GL_UNSIGNED_BYTE, cvimg.data,
+        osg::Image::NO_DELETE, 1);
+    return osgframe;
 }
 
 osg::ref_ptr<osg::Node> myCubeTexture::createBox(void)
@@ -19,30 +31,20 @@ osg::ref_ptr<osg::Node> myCubeTexture::createBox(void)
 //#undef TE
 
 #ifdef TE
-    osg::Vec3d p0(0.356f, 0.5f, 1.0f);
-    osg::Vec3d p1(0.567f, 1.0f, 1.0f);
-    osg::Vec3d p2(1.0f, 0.485f, 1.0f);
-    osg::Vec3d p3(0.5f, 0.0f, 1.0f);
+    osg::Vec3d p0(0.0f, 0.0f, 0.0f);
+    osg::Vec3d p1(4.0f, 0.0f, 0.0f);
+    osg::Vec3d p2(3.0f, 2.0f, 0.0f);
+    osg::Vec3d p3(2.0f, 2.0f, 0.0f);
 #else
     osg::Vec3d p0(0.0f, -1.0f, 1.0f);
     osg::Vec3d p1(0.0f, 0.0f, 1.0f);
     osg::Vec3d p2(1.0f, 0.0f, 1.0f);
     osg::Vec3d p3(1.0f, -1.0f, 1.0f);
 #endif
-    //osg::Vec3d p4(0.0f, -1.0f, 0.0f);
-    //osg::Vec3d p5(0.0f, 0.0f, 0.0f);
-    //osg::Vec3d p6(1.0f, 0.0f, 0.0f);
-    //osg::Vec3d p7(1.0f, -1.0f, 0.0f);
-
     pVertexArr->push_back(p0);
     pVertexArr->push_back(p1);
     pVertexArr->push_back(p2);
     pVertexArr->push_back(p3);
-
-    //pVertexArr->push_back(p4);
-    //pVertexArr->push_back(p5);
-    //pVertexArr->push_back(p6);
-    //pVertexArr->push_back(p7);
 
     //构建索引
     osg::ref_ptr<osg::DrawElementsUInt> pIndexArr =
@@ -53,11 +55,15 @@ osg::ref_ptr<osg::Node> myCubeTexture::createBox(void)
     osg::ref_ptr<osg::Vec2Array> vt = new osg::Vec2Array;
 
 #ifdef TE
-    vt->push_back(osg::Vec2(0.356f, 0.5f));//0,a
-    vt->push_back(osg::Vec2(0.5f, 0.0f));//1,b
-    vt->push_back(osg::Vec2(1.0f, 0.485f));//2,c
-    vt->push_back(osg::Vec2(0.567f, 1.0f));//3,d
+//    vt->push_back(osg::Vec2(0.25f, 0.0f)); //0,a
+//    vt->push_back(osg::Vec2(0.5f, 0.0f));  //1,b
+//    vt->push_back(osg::Vec2(1.0f, 1.0f));  //2,c
+//    vt->push_back(osg::Vec2(0.0f, 1.0f));  //3,d
 
+    vt->push_back(osg::Vec2(1.0f, 1.0f));  //2,c
+    vt->push_back(osg::Vec2(0.0f, 1.0f));  //3,d
+    vt->push_back(osg::Vec2(0.25f, 0.0f)); //0,a
+    vt->push_back(osg::Vec2(0.5f, 0.0f));  //1,b
 
 #else
 
@@ -67,14 +73,11 @@ osg::ref_ptr<osg::Node> myCubeTexture::createBox(void)
     vt->push_back(osg::Vec2(0.0f,0.0f));//0,a
     vt->push_back(osg::Vec2(1.0f,0.0f));//1,b
 #endif
-    //vt->push_back(osg::Vec2(1.0f,1.0f));//4,c
-    //vt->push_back(osg::Vec2(0.0f,1.0f));//5,d
-    //vt->push_back(osg::Vec2(0.0f,0.0f));//6,a
-    //vt->push_back(osg::Vec2(1.0f,0.0f));//7,b
 
     pGeometry->setTexCoordArray(0,vt.get());
 
-    osg::ref_ptr<osg::Image> image = osgDB::readImageFile("1.JPG");
+//    osg::ref_ptr<osg::Image> image = osgDB::readImageFile("1.JPG");
+    osg::ref_ptr<osg::Image> image = osgDB::readImageFile("abc.jpg");
 
     //顶
     pIndexArr->push_back(0);pIndexArr->push_back(3);pIndexArr->push_back(2);pIndexArr->push_back(1);

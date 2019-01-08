@@ -17,6 +17,8 @@
 #include <osgEarthUtil/EarthManipulator>
 #include "earthwalkmanipulator2.h"
 #include "mycubeTexture.h"
+#include "perspectiveTrans.h"
+#include "polygongeometry.h"
 
 using namespace osgEarth;
 using namespace osgEarth::Util;
@@ -107,7 +109,7 @@ int myManipulator()
     keyPtr->addMatrixManipulator('1', "earthMan", new EarthManipulator());
     keyPtr->addMatrixManipulator('2', "trakerMan", nodeTrack);
     keyPtr->addMatrixManipulator('3', "animationPathMan", animationPathMp);
-    keyPtr->addMatrixManipulator('4', "earthWalkMan", new EarthWalkManipulator());
+    keyPtr->addMatrixManipulator('4', "earthWalkMan", new EarthWalkManipulator1());
     viewer.setCameraManipulator(keyPtr);
     //viewer.setUpViewOnSingleScreen(0);
 
@@ -149,6 +151,8 @@ int main(void)
     osg::ref_ptr<osgViewer::Viewer> viewer = new osgViewer::Viewer;
 
     osg::ref_ptr<osg::Group> root = new osg::Group;
+#if 0
+//    myManipulator();
 
     //创建一个节点，读取模型
     //osg::ref_ptr<osg::Node> node = osgDB::readNodeFile("xjsn.OSGB");
@@ -174,6 +178,54 @@ int main(void)
     viewer->setSceneData(root.get());
     viewer->realize();
     viewer->run();
+#endif
+#if 1
+    osg::ref_ptr<osg::Vec2dArray> pVertexArr = new osg::Vec2dArray;
+    osg::ref_ptr<osg::Vec2dArray> pTransVertexArr = new osg::Vec2dArray;
+//    osg::Vec2d px0(0, 0);
+//    osg::Vec2d px1(1, 0);
+//    osg::Vec2d px2(1, 1);
+//    osg::Vec2d px3(0, 1);
+    osg::Vec2d px0(0, 0);
+    osg::Vec2d px3(0, 1);
+    osg::Vec2d px2(1, 1);
+    osg::Vec2d px1(1, 0);
 
+    pVertexArr->push_back(px0);
+    pVertexArr->push_back(px1);
+    pVertexArr->push_back(px2);
+    pVertexArr->push_back(px3);
+//    pVertexArr->push_back(px0);
+//    pVertexArr->push_back(px3);
+//    pVertexArr->push_back(px2);
+//    pVertexArr->push_back(px1);
+
+    osg::Vec2d py0(0, 0);
+    osg::Vec2d py1(4, 0.5);
+    osg::Vec2d py2(2, 2);
+    osg::Vec2d py3(1, 2);
+    pTransVertexArr->push_back(py0);
+    pTransVertexArr->push_back(py1);
+    pTransVertexArr->push_back(py2);
+    pTransVertexArr->push_back(py3);
+
+    cv::Mat resultImg = perspectiveTrans::perspectiveTrans4X4("C:\\Users\\wangpeng\\Desktop\\pic\\1.jpg",
+                                                               pVertexArr,
+                                                               pTransVertexArr);
+
+//    imshow("wangpeng", resultImg);
+    imwrite("C:\\Users\\wangpeng\\Desktop\\pic\\abc.jpg", resultImg);
+    waitKey(0);
+#endif
+#if 0
+    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+    geode->addDrawable(polygonGeometry::createPolygon());
+
+    root->addChild(geode);
+    //渲染
+    viewer->setSceneData(root.get());
+    viewer->realize();
+    viewer->run();
+#endif
     return 0;
 }
