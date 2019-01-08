@@ -19,6 +19,7 @@
 #include "mycubeTexture.h"
 #include "perspectiveTrans.h"
 #include "polygongeometry.h"
+#include "textureUpdate.h"
 
 using namespace osgEarth;
 using namespace osgEarth::Util;
@@ -179,7 +180,7 @@ int main(void)
     viewer->realize();
     viewer->run();
 #endif
-#if 1
+#if 0
     osg::ref_ptr<osg::Vec2dArray> pVertexArr = new osg::Vec2dArray;
     osg::ref_ptr<osg::Vec2dArray> pTransVertexArr = new osg::Vec2dArray;
 //    osg::Vec2d px0(0, 0);
@@ -226,6 +227,10 @@ int main(void)
     viewer->setSceneData(root.get());
     viewer->realize();
     viewer->run();
+#endif
+#if 1
+    textureUpdate myTextureUpdate;
+    myTextureUpdate.doTextureUpdate();
 #endif
     return 0;
 }

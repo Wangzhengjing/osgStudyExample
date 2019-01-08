@@ -12,7 +12,8 @@ SOURCES += \
     mycubeTexture.cpp \
     cameramanipulator.cpp \
     perspectiveTrans.cpp \
-    polygongeometry.cpp
+    polygongeometry.cpp \
+    textureUpdate.cpp
 
 LIBS += -LC:/osg/osgmake/osgearth_bin/lib \
     -losgd \
@@ -71,4 +72,5 @@ HEADERS += \
     mycubeTexture.h \
     cameramanipulator.h \
     perspectiveTrans.h \
-    polygongeometry.h
+    polygongeometry.h \
+    textureUpdate.h
