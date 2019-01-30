@@ -20,6 +20,7 @@
 #include "perspectiveTrans.h"
 #include "polygongeometry.h"
 #include "textureUpdate.h"
+#include "moviePlay.h"
 
 using namespace osgEarth;
 using namespace osgEarth::Util;
@@ -145,7 +146,7 @@ int myManipulator()
     return 1;
 }
 
-int main(void)
+int main(int argc, char*argv[])
 {
 
     //创建Viewer对象，场景浏览器
@@ -228,9 +229,11 @@ int main(void)
     viewer->realize();
     viewer->run();
 #endif
-#if 1
+#if 0
     textureUpdate myTextureUpdate;
     myTextureUpdate.doTextureUpdate();
 #endif
+    MovieEventHandler::play(argc, argv);
+
     return 0;
 }

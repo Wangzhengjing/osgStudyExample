@@ -1,3 +1,5 @@
+DEFINES += MULTIBYTE
+
 SOURCES += \
     main.cpp \
     getworldcoordinateofnodevisitor.cpp \
@@ -13,7 +15,13 @@ SOURCES += \
     cameramanipulator.cpp \
     perspectiveTrans.cpp \
     polygongeometry.cpp \
-    textureUpdate.cpp
+    textureUpdate.cpp \
+    textureUpdateThread.cpp \
+    thread2.cpp \
+    thread3.cpp \
+    thread4.cpp \
+    thread1.cpp \
+    moviePlay.cpp
 
 LIBS += -LC:/osg/osgmake/osgearth_bin/lib \
     -losgd \
@@ -73,4 +81,6 @@ HEADERS += \
     cameramanipulator.h \
     perspectiveTrans.h \
     polygongeometry.h \
-    textureUpdate.h
+    textureUpdate.h \
+    textureUpdateThread.h \
+    moviePlay.h
