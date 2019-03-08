@@ -1,4 +1,4 @@
-#include "myCubeTexture.h"
+﻿#include "myCubeTexture.h"
 #include "perspectiveTrans.h"
 #include <osgDB/WriteFile>
 
@@ -24,97 +24,85 @@ osg::ref_ptr<osg::Node> myCubeTexture::createBox(void)
     pGeode->addDrawable(pGeometry.get());
 
     //构建顶点
-    osg::ref_ptr<osg::Vec3dArray> pVertexArr = new osg::Vec3dArray;
+    osg::ref_ptr<osg::Vec3Array> pVertexArr = new osg::Vec3Array;
     pGeometry->setVertexArray(pVertexArr.get());
 
-#define TE
-//#undef TE
-
-#ifdef TE
     osg::Vec3d p0(0.0f, 0.0f, 0.0f);
-    osg::Vec3d p1(4.0f, 0.0f, 0.0f);
-    osg::Vec3d p2(3.0f, 2.0f, 0.0f);
-    osg::Vec3d p3(2.0f, 2.0f, 0.0f);
-#else
-    osg::Vec3d p0(0.0f, -1.0f, 1.0f);
-    osg::Vec3d p1(0.0f, 0.0f, 1.0f);
-    osg::Vec3d p2(1.0f, 0.0f, 1.0f);
-    osg::Vec3d p3(1.0f, -1.0f, 1.0f);
-#endif
+    osg::Vec3d p1(1.0f, 0.0f, 0.0f);
+    osg::Vec3d p2(1.0f, 1.0f, 0.0f);
+    osg::Vec3d p3(0.0f, 1.0f, 0.0f);
+
+    osg::Vec3d p4(0.0f, 0.0f, 1.0f);
+    osg::Vec3d p5(1.0f, 0.0f, 1.0f);
+
     pVertexArr->push_back(p0);
     pVertexArr->push_back(p1);
     pVertexArr->push_back(p2);
     pVertexArr->push_back(p3);
 
-    //构建索引
-    osg::ref_ptr<osg::DrawElementsUInt> pIndexArr =
-        new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS);
-    pGeometry->addPrimitiveSet(pIndexArr.get());
+    pVertexArr->push_back(p0);
+    pVertexArr->push_back(p1);
+    pVertexArr->push_back(p5);
+    pVertexArr->push_back(p4);
 
-    //设置纹理坐标
-    osg::ref_ptr<osg::Vec2Array> vt = new osg::Vec2Array;
-
-#ifdef TE
-//    vt->push_back(osg::Vec2(0.25f, 0.0f)); //0,a
-//    vt->push_back(osg::Vec2(0.5f, 0.0f));  //1,b
-//    vt->push_back(osg::Vec2(1.0f, 1.0f));  //2,c
-//    vt->push_back(osg::Vec2(0.0f, 1.0f));  //3,d
-
-    vt->push_back(osg::Vec2(1.0f, 1.0f));  //2,c
-    vt->push_back(osg::Vec2(0.0f, 1.0f));  //3,d
-    vt->push_back(osg::Vec2(0.25f, 0.0f)); //0,a
-    vt->push_back(osg::Vec2(0.5f, 0.0f));  //1,b
-
-#else
-
-
-    vt->push_back(osg::Vec2(1.0f,1.0f));//2,c
-    vt->push_back(osg::Vec2(0.0f,1.0f));//3,d
-    vt->push_back(osg::Vec2(0.0f,0.0f));//0,a
-    vt->push_back(osg::Vec2(1.0f,0.0f));//1,b
-#endif
-
-    pGeometry->setTexCoordArray(0,vt.get());
-
-//    osg::ref_ptr<osg::Image> image = osgDB::readImageFile("1.JPG");
-    osg::ref_ptr<osg::Image> image = osgDB::readImageFile("abc.jpg");
-
-    //顶
-    pIndexArr->push_back(0);pIndexArr->push_back(3);pIndexArr->push_back(2);pIndexArr->push_back(1);
-    //左
-    //pIndexArr->push_back(0);pIndexArr->push_back(4);pIndexArr->push_back(5);pIndexArr->push_back(1);
-    //底
-    //pIndexArr->push_back(4);pIndexArr->push_back(7);pIndexArr->push_back(6);pIndexArr->push_back(5);
-    //后
-    //pIndexArr->push_back(2);pIndexArr->push_back(1);pIndexArr->push_back(5);pIndexArr->push_back(6);
-    //右
-    //pIndexArr->push_back(2);pIndexArr->push_back(3);pIndexArr->push_back(7);pIndexArr->push_back(6);
-    //前
-    //pIndexArr->push_back(4);pIndexArr->push_back(7);pIndexArr->push_back(3);pIndexArr->push_back(0);
-
-
-    if (image.get())
+    for (int i = 0; i < 2; i++)
     {
-        //状态属性对象
-        osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
+        //设置纹理坐标
+        osg::ref_ptr<osg::Vec2Array> vt = new osg::Vec2Array(i*4);
+        pGeometry->setTexCoordArray(i,vt.get());
 
+        vt->push_back(osg::Vec2(0.0f, 0.0f));  //2,c
+        vt->push_back(osg::Vec2(0.0f, 1.0f));  //3,d
+        vt->push_back(osg::Vec2(1.0f, 1.0f)); //0,a
+        vt->push_back(osg::Vec2(1.0f, 0.0f));  //1,b
+
+        pGeometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS, i*4, 4));
+    }
+//    osg::ref_ptr<osg::Vec3dArray> nc1 = new osg::Vec3dArray;
+//    nc1->push_back(osg::Vec3(0.0f,0.0f,-1.0f));
+//    nc1->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
+//    pGeometry->setNormalArray(nc1.get(), osg::Array::BIND_PER_PRIMITIVE_SET);
+//    pGeometry->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
+    osg::ref_ptr<osg::Vec3dArray> nc1 = new osg::Vec3dArray;
+    nc1->push_back(osg::Vec3(0.0f,0.0f,-1.0f));
+    pGeometry->setNormalArray(nc1.get(), osg::Array::BIND_OVERALL);
+    pGeometry->setNormalBinding(osg::Geometry::BIND_OVERALL);
+
+    osg::ref_ptr<osg::Image> image = osgDB::readImageFile("C:\\Users\\wangpeng\\Desktop\\pic\\1.jpg");
+    osg::ref_ptr<osg::Image> image1 = osgDB::readImageFile("C:\\Users\\wangpeng\\Desktop\\pic\\3.jpg");
+
+    //状态属性对象
+    osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
+
+    for (int i = 0; i < 2; i++)
+    {
         //创建一个Texture2D属性对象
         osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
+
         //关联image
-        texture->setImage(image.get());
+        if (i == 0 && image.valid())
+        {
+            texture->setImage(image.get());
+        } else if (i == 1 && image1.valid())
+        {
+            texture->setImage(image1.get());
+        }
 
         texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
         texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
         texture->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP_TO_EDGE);
         //关联Texture2D纹理对象，第三个参数默认为ON
-        stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
-        //启用混合
-        stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-        //关闭光照
-        stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-
-        pGeometry->setStateSet(stateset.get());
+        std::cout << "texture : " << i << std::endl;
+        stateset->setTextureAttributeAndModes(i, texture, osg::StateAttribute::ON);
     }
+
+    //启用混合
+    stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+    //关闭光照
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+
+    pGeometry->setStateSet(stateset.get());
+
 
     return pGeode.get();
 }

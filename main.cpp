@@ -1,4 +1,4 @@
-#include <osgViewer/Viewer>
+﻿#include <osgViewer/Viewer>
 #include <osg/Node>
 #include <osgDB/ReadFile>
 #include "getworldcoordinateofnodevisitor.h"
@@ -21,9 +21,19 @@
 #include "polygongeometry.h"
 #include "textureUpdate.h"
 #include "moviePlay.h"
+#include <math.h>
 
 using namespace osgEarth;
 using namespace osgEarth::Util;
+
+enum Vertex {
+    LEFT_TOP = 0,
+    RIGHT_TOP = 1,
+    RIGHT_BOTTOM = 2,
+    LEFT_BOTTOM = 3
+};
+
+#define PI 3.141592653
 
 int myManipulator()
 {
@@ -146,6 +156,142 @@ int myManipulator()
     return 1;
 }
 
+osg::ref_ptr<osg::Vec3dArray> get4VertexArrInClockwise(osg::Vec3 leftTop,
+                                                                       osg::Vec3 rightTop,
+                                                                       osg::Vec3 rightBottom,
+                                                                       osg::Vec3 leftBottom)
+{
+    osg::ref_ptr<osg::Vec3dArray> pVertexArr = new osg::Vec3dArray;
+
+    pVertexArr->push_back(leftTop);//左上
+    pVertexArr->push_back(rightTop);//右上
+    pVertexArr->push_back(rightBottom);//右下
+    pVertexArr->push_back(leftBottom);//左下
+
+    return pVertexArr;
+}
+
+osg::ref_ptr<osg::Vec2dArray> Vec3SurfaceToVec2Surface(osg::ref_ptr<osg::Vec3dArray> vec3dArray)
+{
+    osg::Vec3 vec3_lefttop((*vec3dArray)[LEFT_TOP].x(),(*vec3dArray)[LEFT_TOP].y(),(*vec3dArray)[LEFT_TOP].z());
+    osg::Vec3 vec3_righttop((*vec3dArray)[RIGHT_TOP].x(),(*vec3dArray)[RIGHT_TOP].y(),(*vec3dArray)[RIGHT_TOP].z());
+    osg::Vec3 vec3_rightbottom((*vec3dArray)[RIGHT_BOTTOM].x(),(*vec3dArray)[RIGHT_BOTTOM].y(),(*vec3dArray)[RIGHT_BOTTOM].z());
+    osg::Vec3 vec3_leftbottom((*vec3dArray)[LEFT_BOTTOM].x(),(*vec3dArray)[LEFT_BOTTOM].y(),(*vec3dArray)[LEFT_BOTTOM].z());
+
+    float upside_line = sqrt(pow((vec3_lefttop.x() - vec3_righttop.x()),2) +
+                             pow((vec3_lefttop.y() - vec3_righttop.y()),2) +
+                             pow((vec3_lefttop.z() - vec3_righttop.z()),2));
+    float downside_line = sqrt(pow((vec3_leftbottom.x() - vec3_rightbottom.x()),2) +
+                               pow((vec3_leftbottom.y() - vec3_rightbottom.y()),2) +
+                               pow((vec3_leftbottom.z() - vec3_rightbottom.z()),2));
+    float leftside_line = sqrt(pow((vec3_lefttop.x() - vec3_leftbottom.x()),2) +
+                               pow((vec3_lefttop.y() - vec3_leftbottom.y()),2) +
+                               pow((vec3_lefttop.z() - vec3_leftbottom.z()),2));
+    float rightside_line = sqrt(pow((vec3_righttop.x() - vec3_rightbottom.x()),2) +
+                                pow((vec3_righttop.y() - vec3_rightbottom.y()),2) +
+                                pow((vec3_righttop.z() - vec3_rightbottom.z()),2));
+
+    std::cout << "upside : " << upside_line << std::endl;
+    std::cout << "downside : " << downside_line << std::endl;
+    std::cout << "leftside : " << leftside_line << std::endl;
+    std::cout << "rightside : " << rightside_line << std::endl;
+
+    //右上顶点与左下顶点的对角线长
+    float leftbottom_diagonal_line = sqrt(pow((vec3_righttop.x() - vec3_leftbottom.x()),2) +
+                                          pow((vec3_righttop.y() - vec3_leftbottom.y()),2) +
+                                          pow((vec3_righttop.z() - vec3_leftbottom.z()),2));
+    //左上顶点与右下顶点的对角线长
+    float rightbottom_diagonal_line = sqrt(pow((vec3_lefttop.x() - vec3_rightbottom.x()),2) +
+                                           pow((vec3_lefttop.y() - vec3_rightbottom.y()),2) +
+                                           pow((vec3_lefttop.z() - vec3_rightbottom.z()),2));
+
+    std::cout << "left_diag : " << leftbottom_diagonal_line << std::endl;
+    std::cout << "right_diag : " << rightbottom_diagonal_line << std::endl;
+
+    //cos(A) = (b^2 + c^2 - a^2)/2bc
+    float lefttop_angle = acos((pow((upside_line), 2) +
+                                pow((leftside_line), 2) -
+                                pow((leftbottom_diagonal_line), 2)) /
+                               (2 * upside_line * leftside_line));
+
+    std::cout << "cos_lefttop : " << (pow((upside_line), 2) +
+                                      pow((leftside_line), 2) -
+                                      pow((leftbottom_diagonal_line), 2)) /
+                                     (2 * upside_line * leftside_line) << std::endl;
+    std::cout << "lefttop_angle : " << lefttop_angle << std::endl;
+    ///三角形面积为s = sqrt(p(p-a)(p-b)(p-c))
+    ///其中p为三角形的周长，p = (a+b+c)/2
+    ///    a,b,c分别为三边长
+    //获取左下顶点到上边的距离
+    float circumference_lefttop = (leftside_line + upside_line + leftbottom_diagonal_line) / 2;
+    float area_s_lefttop = sqrt(circumference_lefttop *
+                        (circumference_lefttop - leftside_line) *
+                        (circumference_lefttop - upside_line) *
+                        (circumference_lefttop - leftbottom_diagonal_line));
+    float leftbottom_height = 2 * area_s_lefttop / upside_line;
+
+    std::cout << "left_height : " << leftbottom_height << std::endl;
+    //获取右下顶点到上边的距离
+    float circumference_righttop = (rightside_line + upside_line + rightbottom_diagonal_line) / 2;
+    float area_s_righttop = sqrt(circumference_righttop *
+                        (circumference_righttop - rightside_line) *
+                        (circumference_righttop - upside_line) *
+                        (circumference_righttop - rightbottom_diagonal_line));
+    float rightbottom_height = 2 * area_s_righttop / upside_line;
+
+    std::cout << "right_height : " << rightbottom_height << std::endl;
+
+    osg::Vec2 vec2_lefttop;
+    osg::Vec2 vec2_righttop;
+    osg::Vec2 vec2_rightbottom;
+    osg::Vec2 vec2_leftbottom;
+
+    if (lefttop_angle > (PI / 2) && lefttop_angle < PI)
+    {
+        float lefttop_x = sqrt(pow((leftside_line), 2) -
+                               pow((leftbottom_height), 2));
+        float rightbottom_x = sqrt(pow((downside_line), 2) -
+                                   pow((rightbottom_height - leftbottom_height), 2));
+
+        std::cout << "lefttop_x : " << lefttop_x << std::endl;
+        std::cout << "rightbottom_x : " << rightbottom_x << std::endl;
+
+        //左下顶点在二维坐标系的y轴上
+        vec2_leftbottom = osg::Vec2(0, leftbottom_height);
+        vec2_lefttop = osg::Vec2(lefttop_x, 0);
+        vec2_righttop = osg::Vec2(lefttop_x + upside_line, 0);
+        vec2_rightbottom = osg::Vec2(rightbottom_x, rightbottom_height);
+
+    } else if (lefttop_angle <= (PI / 2) && lefttop_angle > 0) {
+        float leftbottom_x = sqrt(pow((leftside_line), 2) -
+                                  pow((leftbottom_height), 2));
+        float rightbottom_x = sqrt(pow((rightbottom_diagonal_line), 2) -
+                                   pow((rightbottom_height), 2));
+
+        std::cout << "leftbottom_x : " << leftbottom_x << std::endl;
+        std::cout << "rightbottom_x : " << rightbottom_x << std::endl;
+
+        //左上顶点在二维坐标系的y轴上，并且为坐标原点
+        vec2_leftbottom = osg::Vec2(leftbottom_x, leftbottom_height);
+        vec2_lefttop = osg::Vec2(0, 0);
+        vec2_righttop = osg::Vec2(upside_line, 0);
+        vec2_rightbottom = osg::Vec2(rightbottom_x, rightbottom_height);
+
+    } else {
+        std::cout <<"error"<< std::endl;
+    }
+
+    osg::ref_ptr<osg::Vec2dArray> pVec2dArray = new osg::Vec2dArray;
+
+    //按照顺序，存入二维顶点数组
+    pVec2dArray->push_back(vec2_lefttop);
+    pVec2dArray->push_back(vec2_righttop);
+    pVec2dArray->push_back(vec2_rightbottom);
+    pVec2dArray->push_back(vec2_leftbottom);
+
+    return pVec2dArray;
+}
+
 int main(int argc, char*argv[])
 {
 
@@ -153,7 +299,7 @@ int main(int argc, char*argv[])
     osg::ref_ptr<osgViewer::Viewer> viewer = new osgViewer::Viewer;
 
     osg::ref_ptr<osg::Group> root = new osg::Group;
-#if 0
+#if 1
 //    myManipulator();
 
     //创建一个节点，读取模型
@@ -233,7 +379,26 @@ int main(int argc, char*argv[])
     textureUpdate myTextureUpdate;
     myTextureUpdate.doTextureUpdate();
 #endif
+#if 0
     MovieEventHandler::play(argc, argv);
+#endif
+#if 0
+    osg::Vec3 leftTop(0, 0, 0);
+    osg::Vec3 rightTop(100, 0, 0);
+    osg::Vec3 rightBottom(150, 50, 0);
+    osg::Vec3 leftBottom(50, 50, 0);
+
+    osg::ref_ptr<osg::Vec3dArray>pVertexArray = get4VertexArrInClockwise(leftTop,
+                                                                          rightTop,
+                                                                          rightBottom,
+                                                                          leftBottom);
+
+    osg::ref_ptr<osg::Vec2dArray> pArray = Vec3SurfaceToVec2Surface(pVertexArray);
+    std::cout << "lt : " << (*pArray)[0].x() << " " << (*pArray)[0].y() <<std::endl;
+    std::cout << "rt : " << (*pArray)[1].x() << " " << (*pArray)[1].y() <<std::endl;
+    std::cout << "rb : " << (*pArray)[2].x() << " " << (*pArray)[2].y() <<std::endl;
+    std::cout << "lb : " << (*pArray)[3].x() << " " << (*pArray)[3].y() <<std::endl;
+#endif
 
     return 0;
 }

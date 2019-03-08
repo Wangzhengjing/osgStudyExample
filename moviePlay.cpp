@@ -1,4 +1,4 @@
-#include "moviePlay.h"
+﻿#include "moviePlay.h"
 #include <Windows.h>
 
 void MovieEventHandler::set(osg::Node* node)
@@ -215,62 +215,11 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
 
 int MovieEventHandler::play(int argc ,char * argv[])
 {
-    //    // use an ArgumentParser object to manage the program arguments.
-    //    osg::ArgumentParser arguments(&argc,argv);
-
-    //    // set up the usage document, in case we need to print out how to use this program.
-    //    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    //    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" example demonstrates the use of ImageStream for rendering movies as textures.");
-    //    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    //    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    //    arguments.getApplicationUsage()->addCommandLineOption("--texture2D","Use Texture2D rather than TextureRectangle.");
-    //    arguments.getApplicationUsage()->addCommandLineOption("--shader","Use shaders to post process the video.");
-    //    arguments.getApplicationUsage()->addCommandLineOption("--interactive","Use camera manipulator to allow movement around movie.");
-    //    arguments.getApplicationUsage()->addCommandLineOption("--flip","Flip the movie so top becomes bottom.");
-    //#if defined(WIN32) || defined(__APPLE__)
-    //    arguments.getApplicationUsage()->addCommandLineOption("--devices","Print the Video input capability via QuickTime and exit.");
-    //#endif
-
-    bool useTextureRectangle = true;
-    bool useShader = false;
+    bool useTextureRectangle = false;
 
     osgViewer::Viewer viewer;
-    //    // construct the viewer.
-    //    osgViewer::Viewer viewer(arguments);
 
-    //    if (arguments.argc()<=1)
-    //    {
-    //        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-    //        return 1;
-    //    }
-
-#if defined(WIN32) || defined(__APPLE__)
-    //    // if user requests devices video capability.
-    //    if (arguments.read("-devices") || arguments.read("--devices"))
-    //    {
-    //        // Force load QuickTime plugin, probe video capability, exit
-    //        osgDB::readImageFile("devices.live");
-    //        return 1;
-    //    }
-#endif
-
-    //    while (arguments.read("--texture2D")) useTextureRectangle=false;
-    //    while (arguments.read("--shader")) useShader=true;
-
-    bool mouseTracking = false;
-    //    while (arguments.read("--mouse")) mouseTracking=true;
-
-
-    //    // if user request help write it out to cout.
-    //    if (arguments.read("-h") || arguments.read("--help"))
-    //    {
-    //        arguments.getApplicationUsage()->write(std::cout);
-    //        return 1;
-    //    }
-
-    //    bool fullscreen = !arguments.read("--interactive");
-    //    bool flip = arguments.read("--flip");
-    bool fullscreen = true;
+    bool fullscreen = false;
     bool flip = false;
 
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
@@ -278,79 +227,42 @@ int MovieEventHandler::play(int argc ,char * argv[])
     osg::StateSet* stateset = geode->getOrCreateStateSet();
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
-    if (useShader)
-    {
-        //useTextureRectangle = false;
-
-        static const char *shaderSourceTextureRec = {
-            "uniform vec4 cutoff_color;\n"
-            "uniform samplerRect movie_texture;\n"
-            "void main(void)\n"
-            "{\n"
-            "    vec4 texture_color = textureRect(movie_texture, gl_TexCoord[0].st); \n"
-            "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
-            "    gl_FragColor = texture_color;\n"
-            "}\n"
-        };
-
-        static const char *shaderSourceTexture2D = {
-            "uniform vec4 cutoff_color;\n"
-            "uniform sampler2D movie_texture;\n"
-            "void main(void)\n"
-            "{\n"
-            "    vec4 texture_color = texture2D(movie_texture, gl_TexCoord[0].st); \n"
-            "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
-            "    gl_FragColor = texture_color;\n"
-            "}\n"
-        };
-
-        osg::Program* program = new osg::Program;
-
-        program->addShader(new osg::Shader(osg::Shader::FRAGMENT,
-                                           useTextureRectangle ? shaderSourceTextureRec : shaderSourceTexture2D));
-
-        stateset->addUniform(new osg::Uniform("cutoff_color",osg::Vec4(0.1f,0.1f,0.1f,1.0f)));
-        stateset->addUniform(new osg::Uniform("movie_texture",0));
-
-        stateset->setAttribute(program);
-
-    }
-
     osg::Vec3 pos(0.0f,0.0f,0.0f);
     osg::Vec3 topleft = pos;
     osg::Vec3 bottomright = pos;
 
     bool xyPlane = fullscreen;
 
-    //    for(int i=1;i<arguments.argc();++i)
-    //    {
-    //        if (arguments.isString(i))
-    //        {
-
-    //    HINSTANCE hDLL = LoadLibrary("osgdb_ffmpeg.dll");
-
+#if 0
     osgDB::Registry::instance()->addFileExtensionAlias("avi", "ffmpeg");
     osg::Image* image = osgDB::readImageFile("out.avi");
+#else
+    osgDB::Registry::instance()->addFileExtensionAlias("mp4", "ffmpeg");
+    osgDB::Registry::instance()->addFileExtensionAlias("avi", "ffmpeg");
+    osg::Image* image = osgDB::readImageFile("01.mp4");
+//    osg::Image* image = osgDB::readImageFile("out.avi");
+#endif
+
     osg::ImageStream* imagestream = dynamic_cast<osg::ImageStream*>(image);
     if (imagestream) imagestream->play();
 
+    std::cout << "sleep 5 start" <<std::endl;
+//    Sleep(5000);
     if (image)
     {
         osg::notify(osg::NOTICE)<<"image->s()"<<image->s()<<" image-t()="<<image->t()<<std::endl;
 
         geode->addDrawable(myCreateTexturedQuadGeometry(pos,image->s(),image->t(),image, useTextureRectangle, xyPlane, flip));
 
-        bottomright = pos + osg::Vec3(static_cast<float>(image->s()),static_cast<float>(image->t()),0.0f);
+//        bottomright = pos + osg::Vec3(static_cast<float>(image->s()),static_cast<float>(image->t()),0.0f);
 
-        if (xyPlane) pos.y() += image->t()*1.05f;
-        else pos.z() += image->t()*1.05f;
+//        if (xyPlane) pos.y() += image->t()*1.05f;
+//        else pos.z() += image->t()*1.05f;
     }
     else
     {
         std::cout<<"image is null "<<std::endl;
     }
-    //        }
-    //    }
 
     // set the scene to render
     viewer.setSceneData(geode.get());
@@ -360,26 +272,21 @@ int MovieEventHandler::play(int argc ,char * argv[])
         std::cout<<"getSceneData is null"<<std::endl;
         return 1;
     }
-
+#if 0
     // pass the model to the MovieEventHandler so it can pick out ImageStream's to manipulate.
     MovieEventHandler* meh = new MovieEventHandler();
     meh->setMouseTracking( mouseTracking );
     meh->set( viewer.getSceneData() );
     viewer.addEventHandler( meh );
 
+
     viewer.addEventHandler( new osgViewer::StatsHandler );
     viewer.addEventHandler( new osgGA::StateSetManipulator( viewer.getCamera()->getOrCreateStateSet() ) );
     viewer.addEventHandler( new osgViewer::WindowSizeHandler );
+#endif
 
     // add the record camera path handler
-    viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
-
-    //    // report any errors if they have occurred when parsing the program arguments.
-    //    if (arguments.errors())
-    //    {
-    //        arguments.writeErrorMessages(std::cout);
-    //        return 1;
-    //    }
+    //viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
 
     if (fullscreen)
     {
@@ -393,6 +300,7 @@ int MovieEventHandler::play(int argc ,char * argv[])
         {
             viewer.frame();
         }
+
         return 0;
     }
     else
