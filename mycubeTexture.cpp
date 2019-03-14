@@ -1,6 +1,7 @@
 ﻿#include "myCubeTexture.h"
 #include "perspectiveTrans.h"
 #include <osgDB/WriteFile>
+#include "VideoStream.h"
 
 myCubeTexture::myCubeTexture()
 {
@@ -71,26 +72,47 @@ osg::ref_ptr<osg::Node> myCubeTexture::createBox(void)
     osg::ref_ptr<osg::Image> image = osgDB::readImageFile("C:\\Users\\wangpeng\\Desktop\\pic\\1.jpg");
     osg::ref_ptr<osg::Image> image1 = osgDB::readImageFile("C:\\Users\\wangpeng\\Desktop\\pic\\3.jpg");
 
+    std::string videopath = "C:\\osg\\Geo3D\\TestLibss\\data\\03.mov";
+    std::string videopath1 = "C:\\osg\\Geo3D\\TestLibss\\data\\shiwai1.mp4";
+
+    VideoStream* videoStream = new VideoStream(videopath);
+    VideoStream* videoStream1 = new VideoStream(videopath1);
+
+
     //状态属性对象
     osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
 
-    for (int i = 0; i < 2; i++)
+    int num = 2;
+    for (int i = 0; i < num; i++)
     {
         //创建一个Texture2D属性对象
-        osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
+        osg::ref_ptr<osg::Texture2D> texture;
 
         //关联image
         if (i == 0 && image.valid())
         {
-            texture->setImage(image.get());
+            texture = new osg::Texture2D(videoStream->GetImage());
+            videoStream->VideoPlay();
+
+//            texture->setImage(image.get());
+//            texture->setImage(videoStream->GetImage());
         } else if (i == 1 && image1.valid())
         {
-            texture->setImage(image1.get());
+            texture = new osg::Texture2D(videoStream1->GetImage());
+            videoStream1->VideoPlay();
+
+//            texture->setImage(image1.get());
+//            texture->setImage(videoStream1->GetImage());
         }
+
+        texture->setDataVariance(osg::Object::DYNAMIC);
+
+        texture->setResizeNonPowerOfTwoHint(false);
+        texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
 
         texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
         texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
-        texture->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP_TO_EDGE);
+//        texture->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP_TO_EDGE);
         //关联Texture2D纹理对象，第三个参数默认为ON
         std::cout << "texture : " << i << std::endl;
         stateset->setTextureAttributeAndModes(i, texture, osg::StateAttribute::ON);

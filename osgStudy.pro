@@ -21,7 +21,8 @@ SOURCES += \
     thread3.cpp \
     thread4.cpp \
     thread1.cpp \
-    moviePlay.cpp
+    moviePlay.cpp \
+    VideoStream.cpp
 
 LIBS += -LC:/osg/osgmake/osgearth_bin/lib \
     -losgd \
@@ -83,4 +84,5 @@ HEADERS += \
     polygongeometry.h \
     textureUpdate.h \
     textureUpdateThread.h \
-    moviePlay.h
+    moviePlay.h \
+    VideoStream.h
