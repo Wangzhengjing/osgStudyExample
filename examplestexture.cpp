@@ -518,21 +518,21 @@
 //    if (lighting_shader.valid())
 //    {
 //        program->addShader(lighting_shader.get());
-//        OSG_NOTICE<<"Adding lighting shader"<<std::endl;
+//        std::cout<<"Adding lighting shader"<<std::endl;
 //    }
 
 //    osg::ref_ptr<osg::Shader> vertex_shader = osgDB::readRefShaderFile("shaders/osgshadercomposition.vert");
 //    if (vertex_shader.valid())
 //    {
 //        program->addShader(vertex_shader.get());
-//        OSG_NOTICE<<"Adding vertex shader"<<std::endl;
+//        std::cout<<"Adding vertex shader"<<std::endl;
 //    }
 
 //    osg::ref_ptr<osg::Shader> fragment_shader = osgDB::readRefShaderFile("shaders/osgshadercomposition.frag");
 //    if (fragment_shader.valid())
 //    {
 //        program->addShader(fragment_shader.get());
-//        OSG_NOTICE<<"Adding fragment shader"<<std::endl;
+//        std::cout<<"Adding fragment shader"<<std::endl;
 //    }
 
 //    stateset->addUniform(new osg::Uniform("texture0", 0));

@@ -123,9 +123,8 @@ Mat perspectiveTrans::perspectiveTrans4X4(String imgPath,
     //计算转换矩阵
     Mat transform = getPerspectiveTransform(corners,corners_trans);
 
-    transform = (3.999999999999999, 6.956521739130444, -6.821210263296962e-013,
-    5.827044576023344e-016, -8.000000000000002, 2944,
-    -8.131516293641283e-020, 0.008152173913043476, 1);
+    std::cout<<transform<< std::endl;
+
     //设置目标图像大小
     int h_rotate = bigSort_y(pTransVertexArr, 0, 4) * img_height;
     int w_rotate = bigSort_x(pTransVertexArr, 0, 4) * img_width;

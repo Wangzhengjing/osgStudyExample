@@ -8,6 +8,7 @@
 #include <osgDB/Registry>
 #include <osg/ImageStream>
 #include <osg/Image>
+#include "ffmpeg/FFmpegImageStream.hpp"
 
 using namespace cv;
 using namespace std;
@@ -22,6 +23,7 @@ public:
     void VideoPause();
     osg::Image* GetImage();
     void addDimensionsChangedCallback(osg::Image::DimensionsChangedCallback* cb);
+    void setTransformcb(osgFFmpeg::FFmpegImageStream::transformcb_p cb);
 
 private:
     //!
@@ -35,7 +37,7 @@ private:
     //!
     //! \brief m_pImageStream   imageStream from ffmpeg
     //!
-    osg::ImageStream* m_pImageStream;
+    osgFFmpeg::FFmpegImageStream* m_pImageStream;
 };
 
 #endif // VIDEOSTREAM_H

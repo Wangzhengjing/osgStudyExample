@@ -1,0 +1,63 @@
+<map name="default" type="geocentric" version="2">
+     <image name="BJ-LCKJ5" driver="arcgis"  cache_enabled="true">
+        <url>http://192.168.8.90:6080/arcgis/rest/services/bj/lckjzhs/MapServer</url>
+    </image>
+
+    <image name="world_tif" driver="gdal" cache_enabled="true">
+        <url>../gis/world.tif</url>
+        <caching_policy usage="cache_only"/>
+    </image>
+
+    <model name="WorldCountry_L" driver="feature_geom">           
+        <features name="world" driver="ogr">
+            <url>../gis/shp/WorldCountry_L.shp</url>
+            <build_spatial_index>true</build_spatial_index>
+        </features>
+            <feature_indexing/>	
+        <styles>
+            <style type="text/css">
+                world {
+                   stroke:             #ffff00;
+                   stroke-width:       3px;
+                   altitude-clamping:  terrain;
+                   altitude-technique: gpu;
+                }    
+            </style>
+        </styles>
+    </model>
+    
+    <model name="china_all" driver="feature_geom">           
+        <features name="china" driver="ogr">
+            <url>../gis/shp/china_all.shp</url>
+            <build_spatial_index>true</build_spatial_index>
+        </features>
+            <feature_indexing/>	
+        <styles>
+            <style type="text/css">
+                world {
+                   stroke:             #acaca5;
+                   stroke-width:       2px;
+                   altitude-clamping:  terrain;
+                   altitude-technique: gpu;
+                }            
+            </style>
+        </styles>
+    </model>
+    
+    <options>
+        <lighting>false</lighting>
+        <overlay_blending>false</overlay_blending>
+        <terrain>
+    	    <lighting>true</lighting>
+            <min_tile_range_factor>3.5</min_tile_range_factor>
+        </terrain>
+        <cache type="filesystem" cache_only=true>
+	    <path>./cache</path>
+	</cache>
+    </options>
+    
+</map>
+
+
+
+

@@ -1,0 +1,62 @@
+<Model Name="model-1" Count="6">
+    <Surface ID="0" Name="GoundSurface" Count="8">
+        <vertex Name="DLT">x,y</vertex>
+        <vertex Name="DRT">x,y</vertex>
+        <vertex Name="DLB">x,y</vertex>
+        <vertex Name="DRB">x,y</vertex>
+        <vertex Name="SLT">x,y</vertex>
+        <vertex Name="SRT">x,y</vertex>
+        <vertex Name="SLB">x,y</vertex>
+        <vertex Name="SRB">x,y</vertex>
+    </Surface>
+    <Surface ID="1" Name="BackSurface" Count="8">
+        <vertex Name="DLT">x,y</vertex>
+        <vertex Name="DRT">x,y</vertex>
+        <vertex Name="DLB">x,y</vertex>
+        <vertex Name="DRB">x,y</vertex>
+        <vertex Name="SLT">x,y</vertex>
+        <vertex Name="SRT">x,y</vertex>
+        <vertex Name="SLB">x,y</vertex>
+        <vertex Name="SRB">x,y</vertex>
+    </Surface>
+    <Surface ID="2" Name="LeftSurface" Count="8">
+        <vertex Name="DLT">x,y</vertex>
+        <vertex Name="DRT">x,y</vertex>
+        <vertex Name="DLB">x,y</vertex>
+        <vertex Name="DRB">x,y</vertex>
+        <vertex Name="SLT">x,y</vertex>
+        <vertex Name="SRT">x,y</vertex>
+        <vertex Name="SLB">x,y</vertex>
+        <vertex Name="SRB">x,y</vertex>
+    </Surface>
+    <Surface ID="3" Name="RightSurface" Count="8">
+        <vertex Name="DLT">x,y</vertex>
+        <vertex Name="DRT">x,y</vertex>
+        <vertex Name="DLB">x,y</vertex>
+        <vertex Name="DRB">x,y</vertex>
+        <vertex Name="SLT">x,y</vertex>
+        <vertex Name="SRT">x,y</vertex>
+        <vertex Name="SLB">x,y</vertex>
+        <vertex Name="SRB">x,y</vertex>
+    </Surface>
+    <Surface ID="4" Name="TopSurface" Count="8">
+        <vertex Name="DLT">x,y</vertex>
+        <vertex Name="DRT">x,y</vertex>
+        <vertex Name="DLB">x,y</vertex>
+        <vertex Name="DRB">x,y</vertex>
+        <vertex Name="SLT">x,y</vertex>
+        <vertex Name="SRT">x,y</vertex>
+        <vertex Name="SLB">x,y</vertex>
+        <vertex Name="SRB">x,y</vertex>
+    </Surface>
+    <Surface ID="5" Name="FrontSurface" Count="8">
+        <vertex Name="DLT">x,y</vertex>
+        <vertex Name="DRT">x,y</vertex>
+        <vertex Name="DLB">x,y</vertex>
+        <vertex Name="DRB">x,y</vertex>
+        <vertex Name="SLT">x,y</vertex>
+        <vertex Name="SRT">x,y</vertex>
+        <vertex Name="SLB">x,y</vertex>
+        <vertex Name="SRB">x,y</vertex>
+    </Surface>
+</Model>

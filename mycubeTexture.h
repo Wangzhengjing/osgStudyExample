@@ -1,4 +1,4 @@
-#ifndef myCubeTexture_H
+﻿#ifndef myCubeTexture_H
 #define myCubeTexture_H
 
 #include <osg/Node>
@@ -15,6 +15,10 @@ public:
     myCubeTexture();
 
     static osg::ref_ptr<osg::Node> createBox(void);
+    static osg::ref_ptr<osg::Node> createBox2(void);
+    static osg::ref_ptr<osg::Node> createBox3(void);
+    static osg::ref_ptr<osg::Node> createBox4(void);
+
 };
 
 #endif // MYCUBE_H

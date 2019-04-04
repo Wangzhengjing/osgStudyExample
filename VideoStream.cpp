@@ -6,7 +6,14 @@ VideoStream::VideoStream(string pVideoPath)
     osgDB::Registry::instance()->addFileExtensionAlias("mov", "ffmpeg");
 
     m_pImage = osgDB::readImageFile(pVideoPath);
-    m_pImageStream = dynamic_cast<osg::ImageStream*>(m_pImage);
+    m_pImageStream = dynamic_cast<osgFFmpeg::FFmpegImageStream*>(m_pImage);
+
+    if (!m_pImage)
+    {
+        std::cout << "null" << std::endl;
+    }else{
+        std::cout << "not null" << std::endl;
+    }
 
     //frame size , s is width and t is height
     m_videoSize = Size(m_pImage->s(), m_pImage->t());
@@ -22,6 +29,11 @@ VideoStream::VideoStream(string pVideoPath)
 void VideoStream::addDimensionsChangedCallback(Image::DimensionsChangedCallback *cb)
 {
     m_pImageStream->addDimensionsChangedCallback(cb);
+}
+
+void VideoStream::setTransformcb(osgFFmpeg::FFmpegImageStream::transformcb_p cb)
+{
+    m_pImageStream->setTransCallback(cb);
 }
 
 /**

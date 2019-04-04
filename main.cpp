@@ -22,6 +22,8 @@
 #include "textureUpdate.h"
 #include "moviePlay.h"
 #include <math.h>
+#include "config/geoVideoConfig.h"
+#include "config/geoConfigParser.h"
 
 using namespace osgEarth;
 using namespace osgEarth::Util;
@@ -299,7 +301,98 @@ int main(int argc, char*argv[])
     osg::ref_ptr<osgViewer::Viewer> viewer = new osgViewer::Viewer;
 
     osg::ref_ptr<osg::Group> root = new osg::Group;
+//#define WANGPENG
+
+#if defined(WANGPENG)
+    printf("defined WANGPENG\n");
+#endif
+
 #if 1
+    char* file = "D:\\ProjectMange\\GeoVideo\\project\\osgStudy\\config\\myCfg.conf";
+
+    GeoVideoConfig* config = new GeoVideoConfig();
+//    config->insertModel("model");
+
+    GeoConfigParser* parser = new GeoConfigParser(config->getDefaultXmlPath());
+#endif
+#if 0
+#if 0
+    osg::Vec2dArray* dstArr = new osg::Vec2dArray;
+    dstArr->push_back(osg::Vec2(0,0));
+    dstArr->push_back(osg::Vec2(350,0));
+    dstArr->push_back(osg::Vec2(180,250));
+    dstArr->push_back(osg::Vec2(100,250));
+
+    Size rsSize(350,250);
+
+    osg::Vec2dArray* srcArr = new osg::Vec2dArray;
+    srcArr->push_back(osg::Vec2(0,0));
+    srcArr->push_back(osg::Vec2(360,0));
+    srcArr->push_back(osg::Vec2(360,360));
+    srcArr->push_back(osg::Vec2(0,360));
+#else
+    osg::Vec2dArray* dstArr = new osg::Vec2dArray;
+    dstArr->push_back(osg::Vec2(0,0));
+    dstArr->push_back(osg::Vec2(1021.6,0));
+    dstArr->push_back(osg::Vec2(766.20001,419.39993));
+    dstArr->push_back(osg::Vec2(255.40012,419.3999));
+
+    Size rsSize(1021.6,419.39993);
+
+    osg::Vec2dArray* srcArr = new osg::Vec2dArray;
+//    srcArr->push_back(osg::Vec2(0,214));
+//    srcArr->push_back(osg::Vec2(1277,94));
+//    srcArr->push_back(osg::Vec2(1277,702));
+//    srcArr->push_back(osg::Vec2(0,702));
+
+    srcArr->push_back(osg::Vec2(0,0));
+    srcArr->push_back(osg::Vec2(360,0));
+    srcArr->push_back(osg::Vec2(360,360));
+    srcArr->push_back(osg::Vec2(0,360));
+#endif
+
+    osg::Vec2d p0;
+    osg::Vec2d p1;
+    osg::Vec2d p2;
+    osg::Vec2d p3;
+
+
+    vector<Point2f> corners(4);
+    p3 = (*srcArr)[3];
+    p2 = (*srcArr)[2];
+    p1 = (*srcArr)[1];
+    p0 = (*srcArr)[0];
+
+    corners[0] = Point2f(p0.x(), p0.y());
+    corners[1] = Point2f(p1.x(), p1.y());
+    corners[2] = Point2f(p2.x(), p2.y());
+    corners[3] = Point2f(p3.x(), p3.y());
+
+
+    vector<Point2f> corners_trans(4);
+    p3 = (*dstArr)[3];
+    p2 = (*dstArr)[2];
+    p1 = (*dstArr)[1];
+    p0 = (*dstArr)[0];
+
+    corners_trans[0] = Point2f(p0.x(), p0.y());
+    corners_trans[1] = Point2f(p1.x(), p1.y());
+    corners_trans[2] = Point2f(p2.x(), p2.y());
+    corners_trans[3] = Point2f(p3.x(), p3.y());
+
+    cv::Mat image = cv::imread("C:\\Users\\wangpeng\\Desktop\\pic\\1.jpg");
+    cv::Mat trans = cv::getPerspectiveTransform(corners,corners_trans);
+
+    std::cout << trans << std::endl;
+
+    cv::Mat mat;
+    cv::warpPerspective(image, mat, trans, rsSize, INTER_LINEAR);
+
+//    cv::Mat mat = perspectiveTrans::perspectiveTrans4X4("C:\\Users\\wangpeng\\Desktop\\pic\\1.jpg", srcArr,dstArr);
+    cv::imwrite("C:\\Users\\wangpeng\\Desktop\\pic\\1-out.jpg", mat);
+//    waitKey(0);
+#endif
+#if 0
 //    myManipulator();
 
     //创建一个节点，读取模型
@@ -315,7 +408,7 @@ int main(int argc, char*argv[])
     //osg::Matrixd* matrix = GetWorldCoordinateOfNodeVisitor::getWorldCoords(node);
 
     //包围盒渲染
-    osg::ref_ptr<osg::Node> node1 = myCubeTexture::createBox();
+    osg::ref_ptr<osg::Node> node1 = myCubeTexture::createBox4();
     //myTexture::runTexture(node);
     //root->addChild(node1);
 

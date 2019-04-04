@@ -1,4 +1,6 @@
 DEFINES += MULTIBYTE
+DEFINES += __STDC_CONSTANT_MACROS
+DEFINES += WANGPENG
 
 SOURCES += \
     main.cpp \
@@ -22,7 +24,20 @@ SOURCES += \
     thread4.cpp \
     thread1.cpp \
     moviePlay.cpp \
-    VideoStream.cpp
+    VideoStream.cpp \
+    ffmpeg/FFmpegDecoderVideo.cpp \
+    ffmpeg/FFmpegClocks.cpp \
+    ffmpeg/FFmpegDecoderVideo.cpp \
+    ffmpeg/FFmpegClocks.cpp \
+    ffmpeg/FFmpegImageStream.cpp \
+    ffmpeg/FFmpegDecoder.cpp \
+    ffmpeg/FFmpegDecoderAudio.cpp \
+    ffmpeg/FFmpegParameters.cpp \
+    ffmpeg/FFmpegAudioStream.cpp \
+    myFFmpegImageStream.cpp \
+    config/tinyxml2.cpp \
+    config/geoVideoConfig.cpp \
+    config/geoConfigParser.cpp
 
 LIBS += -LC:/osg/osgmake/osgearth_bin/lib \
     -losgd \
@@ -48,6 +63,18 @@ LIBS += -LC:/osg/osgmake/osgearth_bin/lib \
     -losgEarthFeaturesd \
     -losgEarthQtd \
     -losgManipulatord
+
+LIBS += -LC:/osg/ffmpeg-4.1-win64-dev/lib \
+    -lavcodec \
+    -lavdevice \
+    -lavfilter \
+    -lavformat \
+    -lavutil \
+    -lswresample \
+    -lswscale
+
+LIBS += -LD:/ProjectMange/GeoVideo/project/OSG/osg3.2.2/build/lib/osgPlugins-3.2.2 \
+    -losgdb_ffmpegd
 
 LIBS += -LC:/osg/3rdParty/opencv/x64/vc10/lib/ \
         -lopencv_calib3d330d \
@@ -85,4 +112,25 @@ HEADERS += \
     textureUpdate.h \
     textureUpdateThread.h \
     moviePlay.h \
-    VideoStream.h
+    VideoStream.h \
+    ffmpeg/FFmpegDecoderVideo.hpp \
+    ffmpeg/FFmpegHeaders.hpp \
+    ffmpeg/BoundedMessageQueue.hpp \
+    ffmpeg/FFmpegClocks.hpp \
+    ffmpeg/FFmpegPacket.hpp \
+    ffmpeg/FFmpegPacket.hpp \
+    ffmpeg/FFmpegHeaders.hpp \
+    ffmpeg/FFmpegDecoderVideo.hpp \
+    ffmpeg/FFmpegClocks.hpp \
+    ffmpeg/BoundedMessageQueue.hpp \
+    ffmpeg/version.h \
+    ffmpeg/FFmpegImageStream.hpp \
+    ffmpeg/FFmpegDecoder.hpp \
+    ffmpeg/FFmpegDecoderAudio.hpp \
+    ffmpeg/MessageQueue.hpp \
+    ffmpeg/FFmpegParameters.hpp \
+    ffmpeg/FFmpegAudioStream.hpp \
+    myFFmpegImageStream.h \
+    config/tinyxml2.h \
+    config/geoVideoConfig.h \
+    config/geoConfigParser.h
