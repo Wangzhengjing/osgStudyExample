@@ -1,6 +1,7 @@
 DEFINES += MULTIBYTE
 DEFINES += __STDC_CONSTANT_MACROS
-DEFINES += WANGPENG
+#DEFINES += WANGPENG
+#DEFINES += __XMLDocument_FWD_DEFINED__
 
 SOURCES += \
     main.cpp \
@@ -37,7 +38,10 @@ SOURCES += \
     myFFmpegImageStream.cpp \
     config/tinyxml2.cpp \
     config/geoVideoConfig.cpp \
-    config/geoConfigParser.cpp
+    config/geoConfigParser.cpp \
+    virtualfunc.cpp \
+    mapvector.cpp \
+    frustumFromCamera.cpp
 
 LIBS += -LC:/osg/osgmake/osgearth_bin/lib \
     -losgd \
@@ -133,4 +137,8 @@ HEADERS += \
     myFFmpegImageStream.h \
     config/tinyxml2.h \
     config/geoVideoConfig.h \
-    config/geoConfigParser.h
+    config/geoConfigParser.h \
+    myintersection.h \
+    virtualfunc.h \
+    mapvector.h \
+    frustum.h

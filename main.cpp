@@ -5,6 +5,8 @@
 #include "examples/mybillboardtree.h"
 #include "examples/mycube.h"
 #include <osg/ComputeBoundsVisitor>
+#include <osg/MatrixTransform>
+#include <osgViewer/CompositeViewer>
 #include "mytexture.h"
 #include "mytexturecube.h"
 #include "examplestexture.h"
@@ -24,6 +26,10 @@
 #include <math.h>
 #include "config/geoVideoConfig.h"
 #include "config/geoConfigParser.h"
+#include "myMatrixTransform.h"
+#include "virtualfunc.h"
+#include "mapvector.h"
+#include "frustum.h"
 
 using namespace osgEarth;
 using namespace osgEarth::Util;
@@ -158,10 +164,10 @@ int myManipulator()
     return 1;
 }
 
-osg::ref_ptr<osg::Vec3dArray> get4VertexArrInClockwise(osg::Vec3 leftTop,
-                                                                       osg::Vec3 rightTop,
-                                                                       osg::Vec3 rightBottom,
-                                                                       osg::Vec3 leftBottom)
+osg::ref_ptr<osg::Vec3dArray> get4VertexArrInClockwise(osg::Vec3d leftTop,
+                                                                       osg::Vec3d rightTop,
+                                                                       osg::Vec3d rightBottom,
+                                                                       osg::Vec3d leftBottom)
 {
     osg::ref_ptr<osg::Vec3dArray> pVertexArr = new osg::Vec3dArray;
 
@@ -294,20 +300,137 @@ osg::ref_ptr<osg::Vec2dArray> Vec3SurfaceToVec2Surface(osg::ref_ptr<osg::Vec3dAr
     return pVec2dArray;
 }
 
+//osg::Node*
+//makeFrustumFromCamera( osg::Camera* camera )
+//{
+//    // Projection and ModelView matrices
+//    osg::Matrixd proj;
+//    osg::Matrixd mv;
+//    if (camera)
+//    {
+//        proj = camera->getProjectionMatrix();
+//        mv = camera->getViewMatrix();
+//    }
+//    else
+//    {
+//        // Create some kind of reasonable default Projection matrix.
+//        proj.makePerspective( 30., 1., 1., 10. );
+//        // leave mv as identity
+//    }
+
+//    // Get near and far from the Projection matrix.
+//    const double near = proj(3,2) / (proj(2,2)-1.0);
+//    const double far = proj(3,2) / (1.0+proj(2,2));
+
+//    // Get the sides of the near plane.
+//    const double nLeft = near * (proj(2,0)-1.0) / proj(0,0);
+//    const double nRight = near * (1.0+proj(2,0)) / proj(0,0);
+//    const double nTop = near * (1.0+proj(2,1)) / proj(1,1);
+//    const double nBottom = near * (proj(2,1)-1.0) / proj(1,1);
+
+//    // Get the sides of the far plane.
+//    const double fLeft = far * (proj(2,0)-1.0) / proj(0,0);
+//    const double fRight = far * (1.0+proj(2,0)) / proj(0,0);
+//    const double fTop = far * (1.0+proj(2,1)) / proj(1,1);
+//    const double fBottom = far * (proj(2,1)-1.0) / proj(1,1);
+
+//    // Our vertex array needs only 9 vertices: The origin, and the
+//    // eight corners of the near and far planes.
+//    osg::Vec3Array* v = new osg::Vec3Array;
+//    v->resize( 9 );
+//    (*v)[0].set( 0., 0., 0. );
+//    (*v)[1].set( nLeft, nBottom, -near );
+//    (*v)[2].set( nRight, nBottom, -near );
+//    (*v)[3].set( nRight, nTop, -near );
+//    (*v)[4].set( nLeft, nTop, -near );
+//    (*v)[5].set( fLeft, fBottom, -far );
+//    (*v)[6].set( fRight, fBottom, -far );
+//    (*v)[7].set( fRight, fTop, -far );
+//    (*v)[8].set( fLeft, fTop, -far );
+
+//    osg::Geometry* geom = new osg::Geometry;
+//    geom->setUseDisplayList( false );
+//    geom->setVertexArray( v );
+
+//    osg::Vec4Array* c = new osg::Vec4Array;
+//    c->push_back( osg::Vec4( 1., 1., 1., 1. ) );
+//    geom->setColorArray( c, osg::Array::BIND_OVERALL );
+
+//    GLushort idxLines[8] = {
+//        0, 5, 0, 6, 0, 7, 0, 8 };
+//    GLushort idxLoops0[4] = {
+//        1, 2, 3, 4 };
+//    GLushort idxLoops1[4] = {
+//        5, 6, 7, 8 };
+//    geom->addPrimitiveSet( new osg::DrawElementsUShort( osg::PrimitiveSet::LINES, 8, idxLines ) );
+//    geom->addPrimitiveSet( new osg::DrawElementsUShort( osg::PrimitiveSet::LINE_LOOP, 4, idxLoops0 ) );
+//    geom->addPrimitiveSet( new osg::DrawElementsUShort( osg::PrimitiveSet::LINE_LOOP, 4, idxLoops1 ) );
+
+//    osg::Geode* geode = new osg::Geode;
+//    geode->addDrawable( geom );
+
+//    geode->getOrCreateStateSet()->setMode( GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED );
+
+
+//    // Create parent MatrixTransform to transform the view volume by
+//    // the inverse ModelView matrix.
+//    osg::MatrixTransform* mt = new osg::MatrixTransform;
+//    mt->setMatrix( osg::Matrixd::inverse( mv ) );
+//    mt->addChild( geode );
+
+//    return mt;
+//}
+
 int main(int argc, char*argv[])
 {
 
     //创建Viewer对象，场景浏览器
     osg::ref_ptr<osgViewer::Viewer> viewer = new osgViewer::Viewer;
+    osgViewer::CompositeViewer compositeViewer;
 
     osg::ref_ptr<osg::Group> root = new osg::Group;
+
+//    frustum();
+#if 0
+#if 0
+    vector<Point3f> corners_trans(4);
+
+    corners_trans[0] = Point3f(22,0,264);
+    corners_trans[1] = Point3f(4100,0,464);
+    corners_trans[2] = Point3f(4150,0,0);
+    corners_trans[3] = Point3f(0,0,0);
+
+    vector<Point3f> corners(4);
+
+    corners[0] = Point3f(0,0,0);
+    corners[1] = Point3f(1280,0,0);
+    corners[2] = Point3f(1280,204,0);
+    corners[3] = Point3f(0,204,0);
+#else
+    vector<Point2f> corners_trans(4);
+
+    corners_trans[0] = Point2f(22,264);
+    corners_trans[1] = Point2f(4100,464);
+    corners_trans[2] = Point2f(4150,0);
+    corners_trans[3] = Point2f(0,0);
+
+    vector<Point2f> corners(4);
+
+    corners[0] = Point2f(0,0);
+    corners[1] = Point2f(1280,0);
+    corners[2] = Point2f(1280,204);
+    corners[3] = Point2f(0,204);
+#endif
+    Mat a = getPerspectiveTransform(corners,corners_trans);
+    std::cout<<a<<std::endl;
+#endif
 //#define WANGPENG
 
-#if defined(WANGPENG)
-    printf("defined WANGPENG\n");
-#endif
+//#if defined(WANGPENG)
+//    printf("defined WANGPENG\n");
+//#endif
 
-#if 1
+#if 0
     char* file = "D:\\ProjectMange\\GeoVideo\\project\\osgStudy\\config\\myCfg.conf";
 
     GeoVideoConfig* config = new GeoVideoConfig();
@@ -396,7 +519,8 @@ int main(int argc, char*argv[])
 //    myManipulator();
 
     //创建一个节点，读取模型
-    //osg::ref_ptr<osg::Node> node = osgDB::readNodeFile("xjsn.OSGB");
+    osg::ref_ptr<osg::Node> node = osgDB::readNodeFile("xjsn.OSGB");
+    osg::ref_ptr<osg::Node> node3 = osgDB::readNodeFile("cow.osg");
 
     //root->addChild(node);
 
@@ -408,14 +532,71 @@ int main(int argc, char*argv[])
     //osg::Matrixd* matrix = GetWorldCoordinateOfNodeVisitor::getWorldCoords(node);
 
     //包围盒渲染
-    osg::ref_ptr<osg::Node> node1 = myCubeTexture::createBox4();
+//    osg::ref_ptr<osg::Node> node1 = myCubeTexture::createBox4();
     //myTexture::runTexture(node);
     //root->addChild(node1);
 
     //root->addChild(myTextureCube::runTextureCube());
 
-    root->addChild(node1);
+    osg::ref_ptr<osg::Group> group1 = new osg::Group;
+    osg::ref_ptr<osg::Group> group2 = new osg::Group;
+
+#define N 1
+#define M 1
+#define L 300
+
+//#define HENG
+#ifdef HENG
+#define COUNT M
+#define COUNT1 N
+#else
+#define COUNT N
+#define COUNT1 M
+#endif
+
+    for (int i = 0; i < COUNT; i++)
+    {
+        group1->addChild(node);
+    }
+    group2->addChild(node3);
+
+
+    osg::ref_ptr<osg::Group> group;
+    osg::ref_ptr<osg::Group> groupTmp;
+    for (int j =0 ; j < COUNT1; j++)
+    {
+        group = new osg::Group;
+        if (j == 0)
+        {
+            group->addChild(group1);
+        }
+        else
+        {
+            group->addChild(groupTmp);
+        }
+        groupTmp = group;
+
+    }
+
+    for (int k = 0; k < L; k++)
+    {
+//        group = new osg::Group;
+        group->addChild(group1);
+//        root->addChild(group);
+
+    }
+
+    root->addChild(group);
+
+//    root->addChild(node);
+    std::cout << "path count : " << group1->getParentalNodePaths().size() << std::endl;
+    std::cout << "path size : " << group1->getParentalNodePaths()[0].size() << std::endl;
+    std::cout << "path count : " << node->getParentalNodePaths().size() << std::endl;
+    std::cout << "path size : " << node->getParentalNodePaths()[0].size() << std::endl;
+    std::cout << "path count : " << node3->getParentalNodePaths().size() << std::endl;
+    std::cout << "path size : " << node3->getParentalNodePaths()[0].size() << std::endl;
     //渲染
+    viewer->addEventHandler(new osgViewer::StatsHandler);
     viewer->setSceneData(root.get());
     viewer->realize();
     viewer->run();
@@ -458,11 +639,10 @@ int main(int argc, char*argv[])
     imwrite("C:\\Users\\wangpeng\\Desktop\\pic\\abc.jpg", resultImg);
     waitKey(0);
 #endif
-#if 0
-    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-    geode->addDrawable(polygonGeometry::createPolygon());
+#if 1
+    osg::ref_ptr<osg::Node> node3 = osgDB::readNodeFile("cow.osg");
 
-    root->addChild(geode);
+    root->addChild(node3);
     //渲染
     viewer->setSceneData(root.get());
     viewer->realize();
@@ -476,10 +656,10 @@ int main(int argc, char*argv[])
     MovieEventHandler::play(argc, argv);
 #endif
 #if 0
-    osg::Vec3 leftTop(0, 0, 0);
-    osg::Vec3 rightTop(100, 0, 0);
-    osg::Vec3 rightBottom(150, 50, 0);
-    osg::Vec3 leftBottom(50, 50, 0);
+    osg::Vec3d leftTop(-2164624.739,4383957.058,4082113.085);
+    osg::Vec3d rightTop(-2164577.521,4383988.996,4082103.886);
+    osg::Vec3d rightBottom(-2164581.067,4383972.006,4082120.143);
+    osg::Vec3d leftBottom(-2164597.548,4383959.26,4082125.058);
 
     osg::ref_ptr<osg::Vec3dArray>pVertexArray = get4VertexArrInClockwise(leftTop,
                                                                           rightTop,
@@ -493,5 +673,28 @@ int main(int argc, char*argv[])
     std::cout << "lb : " << (*pArray)[3].x() << " " << (*pArray)[3].y() <<std::endl;
 #endif
 
+#if 0
+//    base1 a;
+
+//    derive b;
+//#define __XMLDocument_FWD_DEFINED__
+#ifdef __XMLDocument_FWD_DEFINED__
+    std::cout << "this is me"<<std::endl;
+#endif
+
+#ifdef WANGPENG
+    std::cout << "wangpeng" << std::endl;
+#endif
+
+    mapVector myMapVector;
+
+    std::vector<int> rst = myMapVector.getList("aa");
+    if (rst.empty())
+    {
+        std::cout<<"empty"<<std::endl;
+    }else{
+        std::cout<<"not empty"<<std::endl;
+    }
+#endif
     return 0;
 }
